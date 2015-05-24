@@ -90,11 +90,10 @@ public class Superblock {
 	private Number extractNumberFromBytes(int offset, int length) {
 		int number = 0;
 		for(int i = offset + length - 1; i > offset; i--) {
-			
-			number += bytes[i];
+			number |= (0xFF & bytes[i]);
 			number <<= 8;
 		}
-		number += bytes[offset];
+		number |= (0xFF & bytes[offset]);
 		return number;
 	}
 	
@@ -113,14 +112,14 @@ public class Superblock {
 		blocksPerGroup = extractNumberFromBytes(32, 4).intValue();
 		fragsPerGroup = extractNumberFromBytes(36, 4).intValue();
 		inodesPerGroup = extractNumberFromBytes(40, 4).intValue();
-		lastMountedTime = new Date(extractNumberFromBytes(44, 4).intValue() * 1000);
-		lastWriteTime = new Date(extractNumberFromBytes(48, 4).intValue() * 1000);
+		lastMountedTime = new Date((long) extractNumberFromBytes(44, 4).intValue() * 1000);
+		lastWriteTime = new Date((long) extractNumberFromBytes(48, 4).intValue() * 1000);
 		mountCount = extractNumberFromBytes(52, 2).shortValue();
 		leftMountCount = extractNumberFromBytes(54, 2).shortValue();
 		magicNumber = extractNumberFromBytes(56, 2).shortValue();
 		state = extractNumberFromBytes(58, 2).shortValue();
 		errors = extractNumberFromBytes(60, 2).shortValue();
-		lastCheckTime = new Date(extractNumberFromBytes(64, 4).intValue() * 1000);
+		lastCheckTime = new Date((long) extractNumberFromBytes(64, 4).intValue() * 1000);
 		timeInterval = extractNumberFromBytes(68, 4).intValue();
 		creatorOS = extractNumberFromBytes(72, 4).intValue();
 		defReservedUID = extractNumberFromBytes(80, 2).shortValue();

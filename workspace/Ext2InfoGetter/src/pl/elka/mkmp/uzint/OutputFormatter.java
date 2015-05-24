@@ -43,7 +43,7 @@ public class OutputFormatter {
 		System.out.printf(FORMATTER, "Reserved blocks UID:", superblock.getDefReservedUID() + " (user root)");
 		System.out.printf(FORMATTER, "Reserved blocks GID:", superblock.getDefReservedGID() + " (group root)");
 		System.out.printf(FORMATTER, "First I-Node:", superblock.getFirstInode());
-		System.out.printf(FORMATTER, "I-Node size:",  - superblock.getInodeSize());
+		System.out.printf(FORMATTER, "I-Node size:",  superblock.getInodeSize());
 	}
 	
 }
