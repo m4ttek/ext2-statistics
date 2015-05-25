@@ -86,15 +86,28 @@ public class Superblock {
 
 	// zawiera informację o rozmiarze jednego węzła
 	private final Short inodeSize;
+
+	// nazwa woluminu (praktycznie nieużywana)
+	private final String volumeName;
+
+	// zawiera informację o ścieżce pod którą został ostatnio zamontowany
+	private final String lastMountedPath;
+
+	// zawiera informację o indetyfikatorze rewizji systemu plików
+	private final Integer revisionLevel;
 	
 	private Number extractNumberFromBytes(int offset, int length) {
 		int number = 0;
-		for(int i = offset + length - 1; i > offset; i--) {
+		for (int i = offset + length - 1; i > offset; i--) {
 			number |= (0xFF & bytes[i]);
 			number <<= 8;
 		}
 		number |= (0xFF & bytes[offset]);
 		return number;
+	}
+	
+	private String extractStringFromBytes(int offset, int length) {
+		return new String(bytes, offset, length);
 	}
 	
 	public Superblock(byte[] bytes) {
@@ -126,6 +139,9 @@ public class Superblock {
 		defReservedGID = extractNumberFromBytes(82, 2).shortValue();
 		firstInode = extractNumberFromBytes(84, 4).intValue();
 		inodeSize = extractNumberFromBytes(88, 2).shortValue();
+		volumeName = extractStringFromBytes(120, 16);
+		lastMountedPath = extractStringFromBytes(136, 64);
+		revisionLevel = extractNumberFromBytes(76, 4).intValue();
 	}
 
 	public byte[] getBytes() {
@@ -230,6 +246,18 @@ public class Superblock {
 
 	public Short getInodeSize() {
 		return inodeSize;
+	}
+
+	public String getVolumeName() {
+		return volumeName;
+	}
+
+	public String getLastMountedPath() {
+		return lastMountedPath;
+	}
+
+	public Integer getRevisionLevel() {
+		return revisionLevel;
 	}
 	
 }

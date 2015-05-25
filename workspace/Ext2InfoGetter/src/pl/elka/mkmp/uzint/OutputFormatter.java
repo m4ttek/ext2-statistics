@@ -8,6 +8,12 @@ package pl.elka.mkmp.uzint;
  */
 public class OutputFormatter {
 	
+	private static final String NOT_AVAILABLE = "<not available>";
+
+	private static final String NONE = "<none>";
+
+	private static final String N_A = "n/a";
+
 	private static final String FORMATTER = "%-40.40s  %-30.30s%n";
 	
 	private static final Short EXT2_SUPER_MAGIC = (short) 0xEF53;
@@ -30,7 +36,11 @@ public class OutputFormatter {
 		System.out.printf(FORMATTER, "Number of Blocks per group:", superblock.getBlocksPerGroup());
 		System.out.printf(FORMATTER, "Number of I-Nodes per group:", superblock.getInodesPerGroup());
 		System.out.printf(FORMATTER, "Number of Fragments per group:", superblock.getFragsPerGroup());
-		System.out.printf(FORMATTER, "Last mount time:", superblock.getLastMountedTime());
+		if (superblock.getLastMountedTime().getTime() == 0) {
+			System.out.printf(FORMATTER, "Last mount time:", N_A);
+		} else {
+			System.out.printf(FORMATTER, "Last mount time:", superblock.getLastMountedTime());
+		}
 		System.out.printf(FORMATTER, "Last write time:", superblock.getLastWriteTime());
 		System.out.printf(FORMATTER, "Mount count since fully verified:", superblock.getMountCount());
 		System.out.printf(FORMATTER, "Left mount count to being fully verified:", superblock.getLeftMountCount());
@@ -38,12 +48,23 @@ public class OutputFormatter {
 		System.out.printf(FORMATTER, "File system state:", FileSystemState.getById(superblock.getState()).getCode());
 		System.out.printf(FORMATTER, "File system on error behaviour:", ErrorBehaviour.getById(superblock.getErrors()).getCode());
 		System.out.printf(FORMATTER, "Last check time:", superblock.getLastCheckTime());
-		System.out.printf(FORMATTER, "Check time interval:", - superblock.getTimeInterval());
+		System.out.printf(FORMATTER, "Check time interval:", superblock.getTimeInterval());
 		System.out.printf(FORMATTER, "OS creator:", OSCreator.getById(superblock.getCreatorOS()).getCode());
 		System.out.printf(FORMATTER, "Reserved blocks UID:", superblock.getDefReservedUID() + " (user root)");
 		System.out.printf(FORMATTER, "Reserved blocks GID:", superblock.getDefReservedGID() + " (group root)");
 		System.out.printf(FORMATTER, "First I-Node:", superblock.getFirstInode());
 		System.out.printf(FORMATTER, "I-Node size:",  superblock.getInodeSize());
+		if (superblock.getVolumeName().trim().isEmpty()) {
+			System.out.printf(FORMATTER, "Volume name:",  NONE);
+		} else {
+			System.out.printf(FORMATTER, "Volume name:",  superblock.getVolumeName());
+		}
+		if (superblock.getVolumeName().trim().isEmpty()) {
+			System.out.printf(FORMATTER, "Last mounted on:",  NOT_AVAILABLE);
+		} else {
+			System.out.printf(FORMATTER, "Last mounted on:",  superblock.getLastMountedPath());
+		}
+		System.out.printf(FORMATTER, "Filesystem revision #:",  RevisionLevel.getById(superblock.getRevisionLevel()));
 	}
 	
 }
