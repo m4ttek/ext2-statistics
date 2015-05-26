@@ -8,7 +8,7 @@ package pl.elka.mkmp.uzint;
  */
 public class OutputFormatter {
 	
-	private static final String NOT_AVAILABLE = "<not available>";
+	private static final String NOT_AVAILABLE = "n/a";
 
 	private static final String NONE = "<none>";
 
@@ -23,7 +23,7 @@ public class OutputFormatter {
 		System.out.println("Showing statistics for ext2 file system '" + fsName + "'\n");
 		if (!superblock.getMagicNumber().equals(EXT2_SUPER_MAGIC)) {
 			System.err.println("Loaded file is not an EXT2 file system!");
-			System.exit(1);
+			System.exit(4);
 		}
 		
 		System.out.printf(FORMATTER, "No. of I-Nodes (all used and free):", superblock.getInodesCount());
@@ -48,7 +48,12 @@ public class OutputFormatter {
 		System.out.printf(FORMATTER, "File system state:", FileSystemState.getById(superblock.getState()).getCode());
 		System.out.printf(FORMATTER, "File system on error behaviour:", ErrorBehaviour.getById(superblock.getErrors()).getCode());
 		System.out.printf(FORMATTER, "Last check time:", superblock.getLastCheckTime());
-		System.out.printf(FORMATTER, "Check time interval:", superblock.getTimeInterval());
+		if(superblock.getTimeInterval().equals(0)) {
+			System.out.printf(FORMATTER, "Check time interval:", superblock.getTimeInterval() + " (" + NONE + ")");
+		} else {
+			System.out.printf(FORMATTER, "Check time interval:", superblock.getTimeInterval());
+		}
+		System.out.printf(FORMATTER, "Check time interval:", superblock.getTimeInterval() + (superblock.getTimeInterval()));
 		System.out.printf(FORMATTER, "OS creator:", OSCreator.getById(superblock.getCreatorOS()).getCode());
 		System.out.printf(FORMATTER, "Reserved blocks UID:", superblock.getDefReservedUID() + " (user root)");
 		System.out.printf(FORMATTER, "Reserved blocks GID:", superblock.getDefReservedGID() + " (group root)");
@@ -59,12 +64,12 @@ public class OutputFormatter {
 		} else {
 			System.out.printf(FORMATTER, "Volume name:",  superblock.getVolumeName());
 		}
-		if (superblock.getVolumeName().trim().isEmpty()) {
+		if (superblock.getLastMountedPath().trim().isEmpty()) {
 			System.out.printf(FORMATTER, "Last mounted on:",  NOT_AVAILABLE);
 		} else {
 			System.out.printf(FORMATTER, "Last mounted on:",  superblock.getLastMountedPath());
 		}
-		System.out.printf(FORMATTER, "Filesystem revision #:",  RevisionLevel.getById(superblock.getRevisionLevel()));
+		System.out.printf(FORMATTER, "Filesystem revision #:",  RevisionLevel.getById(superblock.getRevisionLevel()).getCode());
 	}
 	
 }
